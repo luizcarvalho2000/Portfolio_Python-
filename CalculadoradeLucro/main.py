@@ -28,7 +28,7 @@ def calcularLucro(nomeProduto, precoDeCompra, precoDeVenda, quantidade, custosAd
         wb.active.title  = "Resultado da Calculadora de Lucro"
         wb.active.append(["Produto", "Preço de Compra", "Preço de Venda", "Quantidade", "Custos Adicionais", "Custo de Frete", "Custo Total", "Lucro liquido", "Margem de lucro"])
 
-    sheet = wb["Lucro"]
+    sheet = wb["lucro"]
     lastRow = sheet.max_row + 1
 
     sheet.cell(row=lastRow, column=1).value = nomeProduto

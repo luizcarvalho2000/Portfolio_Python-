@@ -2,34 +2,51 @@ import openpyxl
 
 
 def estatistica():
-    # Abre a planilha
-    wb = openpyxl.load_workbook("dados.xlsx")
-    sheet = wb["lucro"]
+    try:
+        # Abre a planilha
+        wb = openpyxl.load_workbook("dados.xlsx")
 
-    # define as células iniciais e finais dos dados
-    primeiraLinha = 2
-    ultimaLinha = sheet.max_row
+        # Verifica se a aba "lucro" existe, se não cria
+        if "lucro" not in wb.sheetnames:
+            wb.create_sheet("lucro")
 
-    # Inicializa as variáveis para os totais
-    custoTotalTotal = 0
-    lucroTotal = 0
+        sheet = wb["lucro"]
 
-    # Criando o total de custo total e lucro
-    for linha in range(primeiraLinha, ultimaLinha + 1):
-        custoTotalTotal += sheet.cell(row=linha, column=7).value
-        lucroTotal += sheet.cell(row=linha, column=8).value
+        # Define as células iniciais e finais dos dados (ignorando o cabeçalho)
+        primeiraLinha = 2
+        ultimaLinha = sheet.max_row
 
-    # Calculando a margem de lucro total
-    precoDeVendaTotal = sum(sheet.cell(row=linha, column=3).value for linha in range(primeiraLinha, ultimaLinha + 1))
-    margemDeLucroTotal = lucroTotal / precoDeVendaTotal * 100
+        # Inicializa as variáveis para os totais
+        custoTotalTotal = 0
+        lucroTotal = 0
+        precoDeVendaTotal = 0
 
-    custoTotalTotal = float("{:.2f}".format(custoTotalTotal))
-    lucroLiquidoTotal = float("{:.2f}".format(lucroTotal))
-    margemDeLucroTotal = float("{:.2f}".format(margemDeLucroTotal))
+        # Calcula os totais
+        for linha in range(primeiraLinha, ultimaLinha + 1):
+            custoTotalTotal += sheet.cell(row=linha, column=7).value or 0  # Trata células vazias
+            lucroTotal += sheet.cell(row=linha, column=8).value or 0
+            precoDeVendaTotal += sheet.cell(row=linha, column=3).value or 0
 
-    listaDeDados = [custoTotalTotal, lucroLiquidoTotal, margemDeLucroTotal]
+        # Calcula a margem de lucro total, tratando a divisão por zero
+        if precoDeVendaTotal != 0:
+            margemDeLucroTotal = (lucroTotal / precoDeVendaTotal) * 100
+        else:
+            margemDeLucroTotal = 0  # Ou "N/A"
 
-    return listaDeDados
+        # Formata os valores para duas casas decimais
+        custoTotalTotal = round(custoTotalTotal, 2)
+        lucroLiquidoTotal = round(lucroTotal, 2)
+        margemDeLucroTotal = round(margemDeLucroTotal, 2)
+
+        return [custoTotalTotal, lucroLiquidoTotal, margemDeLucroTotal]
+
+    except FileNotFoundError:
+        # Retorna valores padrão se o arquivo não for encontrado
+        return [0, 0, 0]
+    except Exception as e:
+        # Retorna valores padrão para outros erros e imprime o erro no console
+        print(f"Erro ao calcular estatísticas: {e}")
+        return [0, 0, 0]
 
 def obterDadosExcel(nomeDoArquivo):
     wb = openpyxl.load_workbook(nomeDoArquivo)
@@ -60,43 +77,46 @@ def obterDadosExcel(nomeDoArquivo):
     print("O cisto total do produto {} é de R$ {:.2f}.".format(nomeProduto, custoTotal))'''
 
 def salvarProdutos(nomeProduto, precoDeCompra, precoDeVenda, quantidade, custosAdicionais, custoFrete):
+    # Converte os valores para os tipos corretos, tratando possíveis erros de conversão
+    try:
+        precoDeCompra = float(precoDeCompra)
+        precoDeVenda = float(precoDeVenda)
+        quantidade = int(quantidade)
+        custosAdicionais = float(custosAdicionais)
+        custoFrete = float(custoFrete)
+    except ValueError:
+        # Se a conversão falhar, retorna um erro
+        print("Erro: Valores inválidos inseridos. Certifique-se de que os valores sejam numéricos.")
+        return
 
-    # Perguntando ao usuário pelos dados
-    nomeProduto = nomeProduto
-    precoDeCompra = float(precoDeCompra)
-    precoDeVenda = float(precoDeVenda)
-    quantidade = int(quantidade)
-    custosAdicionais = float(custosAdicionais)
-    custoFrete = float(custoFrete)
-
-    # Calculando o lucro
-    custoTotal = (precoDeCompra + custosAdicionais + custoFrete) * quantidade
+    # Calcula o lucro
+    custoTotal = (precoDeCompra * quantidade) + custosAdicionais + (custoFrete * quantidade)
     lucro = (precoDeVenda - precoDeCompra - custosAdicionais - custoFrete) * quantidade
-    margemDeLucro = lucro / (precoDeVenda * quantidade) * 100
-
-    # Salvando os resultados em um arquivo.xlsx
+    margemDeLucro = (lucro / (precoDeVenda * quantidade)) * 100
 
     try:
         wb = openpyxl.load_workbook("dados.xlsx")
     except FileNotFoundError:
         wb = openpyxl.Workbook()
-        wb.active.title  = "Resultado da Calculadora de Lucro"
-        wb.active.append(["Produto", "Preço de Compra", "Preço de Venda", "Quantidade", "Custos Adicionais", "Custo de Frete", "Custo Total", "Lucro liquido", "Margem de lucro"])
+
+    # Verificar se a planilha "lucro" existe, senão criar
+    if "lucro" not in wb.sheetnames:
+        wb.create_sheet("lucro")
 
     sheet = wb["lucro"]
-    lastRow = sheet.max_row + 1
 
-    sheet.cell(row=lastRow, column=1).value = nomeProduto
-    sheet.cell(row=lastRow, column=2).value = precoDeCompra
-    sheet.cell(row=lastRow, column=3).value = precoDeVenda
-    sheet.cell(row=lastRow, column=4).value = quantidade
-    sheet.cell(row=lastRow, column=5).value = custosAdicionais
-    sheet.cell(row=lastRow, column=6).value = custoFrete
-    sheet.cell(row=lastRow, column=7).value = custoTotal
-    sheet.cell(row=lastRow, column=8).value = lucro
-    sheet.cell(row=lastRow, column=9).value = margemDeLucro
+    # Definir cabeçalho se a planilha for nova
+    if sheet.max_row == 1:
+        sheet.append(["Produto", "Preço de Compra", "Preço de Venda", "Quantidade", "Custos Adicionais", "Custo de Frete", "Custo Total", "Lucro Líquido", "Margem de Lucro"])
+
+    # Salva os resultados na planilha
+    sheet.append([nomeProduto, precoDeCompra, precoDeVenda, quantidade, custosAdicionais, custoFrete, custoTotal, lucro, margemDeLucro])
+
+    if 'Sheet' in wb.sheetnames:
+        del wb['Sheet']
 
     wb.save("dados.xlsx")
+    print("Produto salvo com sucesso!")
 
 def deletarLinhaPorNome(nomeProduto, nomePlanilha):
     # Carrega a planilha
