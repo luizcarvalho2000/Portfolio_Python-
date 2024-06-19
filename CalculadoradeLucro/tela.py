@@ -84,6 +84,8 @@ def calcular():
 
     lista = [nome, compra, venda, quantidade, adicionais, frete]
 
+    graficoBar()
+
     # Verificando caso tenha campos vazios
 
     for item in lista:
@@ -91,32 +93,33 @@ def calcular():
             messagebox.showerror("ERRO", "Preencha todos os campos")
             return
 
-    # Calculando o Lucro e aplicando na label
-    def calcularLucro(nomeProduto, precoDeCompra, precoDeVenda, quantidade, custosAdicionais, custoFrete):
-
-        # Perguntando ao usuário pelos dados
-        nomeProduto = nomeProduto
-        precoDeCompra = float(precoDeCompra)
-        precoDeVenda = float(precoDeVenda)
-        quantidade = int(quantidade)
-        custosAdicionais = float(custosAdicionais)
-        custoFrete = float(custoFrete)
-
-        # Calculando o lucro
-        custoTotal = (precoDeCompra + custosAdicionais + custoFrete) * quantidade
-        lucro = (precoDeVenda - precoDeCompra - custosAdicionais - custoFrete) * quantidade
-        margemDeLucro = lucro / (precoDeVenda * quantidade) * 100
-
-        # Imprimindo os resultados
-
-        lblNomeLucro['text'] = "O lucro do produto {} é de R${:.2f} e a margem de lucro é de {:.2f}%.".format(
-            nomeProduto, margemDeLucro, custoTotal)
-        lblLucro['text'] = "R${:.2f}".format(lucro)
-        lblCusto['text'] = "R${:.2f}".format(margemDeLucro)
-
     # Fazendo calculo
     calcularLucro(nome, compra, venda, quantidade, adicionais, frete)
 
+
+
+    # Calculando o Lucro e aplicando na label
+def calcularLucro(nomeProduto, precoDeCompra, precoDeVenda, quantidade, custosAdicionais, custoFrete):
+
+    # Perguntando ao usuário pelos dados
+    nomeProduto = nomeProduto
+    precoDeCompra = float(precoDeCompra)
+    precoDeVenda = float(precoDeVenda)
+    quantidade = int(quantidade)
+    custosAdicionais = float(custosAdicionais)
+    custoFrete = float(custoFrete)
+
+    # Calculando o lucro
+    custoTotal = (precoDeCompra + custosAdicionais + custoFrete) * quantidade
+    lucro = (precoDeVenda - precoDeCompra - custosAdicionais - custoFrete) * quantidade
+    margemDeLucro = lucro / (precoDeVenda * quantidade) * 100
+
+    # Imprimindo os resultados
+
+    lblNomeLucro['text'] = "O lucro do produto {} é de R${:.2f} e a margem de lucro é de {:.2f}%.".format(
+        nomeProduto, margemDeLucro, custoTotal)
+    lblLucro['text'] = "R${:.2f}".format(lucro)
+    lblCusto['text'] = "R${:.2f}".format(margemDeLucro)
 
 # Função para salvar dados no Excel
 def salvarDados():
@@ -149,9 +152,9 @@ def salvarDados():
     entryFrete.delete(0, END)
 
     # Mostrando os dados salvos no grafico
-
-    mostrar()
     graficoBar()
+    mostrar()
+
 
 
 def obterEstatisticasAtualizadas():
@@ -225,6 +228,7 @@ def sair():
         case False:
             pass
 
+
 def deletar():
     try:
         treevDados = tree.focus()
@@ -246,6 +250,7 @@ def deletar():
                 mostrar()
             case False:
                 pass
+        graficoBar()
 
     except IndexError:
         messagebox.showerror("ERRO", "Selecione um produto para deletar")
@@ -408,11 +413,13 @@ listaNomes = ['Valor total de custo', 'Lucro líquido total', 'Margem de lucro t
 listaValores = estatistica()
 simbolos = ['R$', 'R$', '%']
 
+
 # faça figura e atribua objetos de eixo
 figura = plt.Figure(figsize=(6.2, 3.5), dpi=60)
 ax = figura.add_subplot(111)
 # ax.autoscale(enable=True, axis='both', tight=None)
 ax.bar(listaNomes, listaValores, color=cor1, width=0.5)
+
 
 # crie uma lista para coletar os dados plt.patches
 c = 0
@@ -446,12 +453,11 @@ ax.tick_params(bottom=False, left=False)
 ax.set_axisbelow(True)
 ax.yaxis.grid(True, color='#EEEEEE')
 ax.xaxis.grid(False)
-
 canva = FigureCanvasTkAgg(figura, frmChart)
 canva.get_tk_widget().place(x=0, y=50)
+
+
 graficoBar()
-
-
 
 # função para mostrar
 def mostrar():
