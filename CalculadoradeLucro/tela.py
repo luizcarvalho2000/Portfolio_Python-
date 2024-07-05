@@ -437,24 +437,24 @@ for i in ax.patches:
 
     c += 1
 
-ax.set_xticks(np.arange(len(listaNomes)))
-ax.set_xticklabels(listaNomes, fontsize=12)
-ax.patch.set_facecolor('#ffffff')
-ax.spines['bottom'].set_color('#CCCCCC')
-ax.spines['bottom'].set_linewidth(1)
-ax.spines['right'].set_linewidth(0)
-ax.spines['top'].set_linewidth(0)
-ax.spines['left'].set_color('#CCCCCC')
-ax.spines['left'].set_linewidth(1)
-ax.spines['top'].set_visible(False)
-ax.spines['right'].set_visible(False)
-ax.spines['left'].set_visible(False)
-ax.tick_params(bottom=False, left=False)
-ax.set_axisbelow(True)
-ax.yaxis.grid(True, color='#EEEEEE')
-ax.xaxis.grid(False)
-canva = FigureCanvasTkAgg(figura, frmChart)
-canva.get_tk_widget().place(x=0, y=50)
+    ax.set_xticks(np.arange(len(listaNomes)))
+    ax.set_xticklabels(listaNomes, fontsize=12)
+    ax.patch.set_facecolor('#ffffff')
+    ax.spines['bottom'].set_color('#CCCCCC')
+    ax.spines['bottom'].set_linewidth(1)
+    ax.spines['right'].set_linewidth(0)
+    ax.spines['top'].set_linewidth(0)
+    ax.spines['left'].set_color('#CCCCCC')
+    ax.spines['left'].set_linewidth(1)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.tick_params(bottom=False, left=False)
+    ax.set_axisbelow(True)
+    ax.yaxis.grid(True, color='#EEEEEE')
+    ax.xaxis.grid(False)
+    canva = FigureCanvasTkAgg(figura, frmChart)
+    canva.get_tk_widget().place(x=0, y=50)
 
 
 graficoBar()
@@ -498,5 +498,6 @@ def mostrar():
 
 
 mostrar()
+graficoBar()
 
 janela.mainloop()
