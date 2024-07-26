@@ -1,6 +1,6 @@
 import DAO as PreferenciasDAO
 
-class Preferencias():
+class Preferencias:
     def __init__(self):
         super().__init__()
 

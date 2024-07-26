@@ -1,12 +1,14 @@
 import os
 import pyodbc
 import pandas as pdPreferencias
+from io import StringIO
 
-class PreferenciasDAO():
+class PreferenciasDAO:
     def __init__(self):
         super().__init__()
 
     def impBdConect(self):
+        global objConexao
         try:
             lista = []
 
@@ -21,8 +23,15 @@ class PreferenciasDAO():
 
             objConexao = pyodbc.connect(connectionString)
             objLeitorBd = objConexao.cursor()
-            strSQL = "SELECT Descricao FROM Preferencias_3 ORDER BY ID"
-            objLeitorBd.execute(strSQL)
+
+            strSQL = StringIO()
+            strSQL.write("SELECT")
+            strSQL.write(" Descricao")
+            strSQL.write(" FROM")
+            strSQL.write(" Preferencias_3")
+            strSQL.write(" ORDER BY ID")
+
+            objLeitorBd.execute(strSQL.getvalue())
 
             registro = objLeitorBd.fetchone()
 
@@ -31,14 +40,15 @@ class PreferenciasDAO():
                 registro = objLeitorBd.fetchone()
 
             objLeitorBd.close()
-            objConexao.close()
-
             return lista
 
         except Exception as erro:
             return erro
+        finally:
+            objConexao.close()
 
     def impBdDesconect(self):
+        global objConexao
         try:
             lista = []
 
@@ -53,15 +63,22 @@ class PreferenciasDAO():
 
             objConexao = pyodbc.connect(connectionString)
             objLeitorBd = objConexao.cursor()
-            strSQL = "SELECT Descricao FROM Preferencias_3 ORDER BY ID"
-            objLeitorBd.execute(strSQL)
+
+            strSQL = StringIO()
+            strSQL.write("SELECT")
+            strSQL.write(" Descricao")
+            strSQL.write(" FROM")
+            strSQL.write(" Preferencias_3")
+            strSQL.write(" ORDER BY ID")
+
+            objLeitorBd.execute(strSQL.getvalue())
 
             registro = objLeitorBd.fetchall()
 
             dfPreferencias = pdPreferencias.DataFrame(registro, columns=["Descricao"])
 
             objLeitorBd.close()
-            objConexao.close()
+
 
             for linha in dfPreferencias["Descricao"]:
                 lista.append(linha.Descricao)
@@ -69,9 +86,12 @@ class PreferenciasDAO():
 
         except Exception as erro:
             return erro
+        finally:
+            objConexao.close()
 
     def consultBd(self, parPreferenciasDescricao=None):
 
+        global objConexao
         try:
             dataBaseName = "Preferencias_3_09022024.accdb"
             projectDirectory = os.path.dirname(os.path.abspath(__file__))
@@ -85,22 +105,32 @@ class PreferenciasDAO():
             objConexao = pyodbc.connect(connectionString)
             objLeitorBd = objConexao.cursor()
 
+            strSQL = StringIO()
+            strSQL.write("SELECT")
+            strSQL.write(" ID,")
+            strSQL.write(" Descricao")
+            strSQL.write(" FROM")
+            strSQL.write(" Preferencias_3")
+
             if parPreferenciasDescricao is None or parPreferenciasDescricao.strip() == "":
-                strSQL = "SELECT ID, Descricao FROM Preferencias_3 ORDER BY ID"
-                objLeitorBd.execute(strSQL)
+                strSQL.write(" ORDER BY ID")
+                objLeitorBd.execute(strSQL.getvalue())
             else:
-                strSQL = "SELECT ID, Descricao FROM Preferencias_3 WHERE Descricao = ? ORDER BY ID"
-                objLeitorBd.execute(strSQL, parPreferenciasDescricao)
+                strSQL.write(" WHERE")
+                strSQL.write(" Descricao = ?")
+                strSQL.write(" ORDER BY ID")
+                objLeitorBd.execute(strSQL.getvalue(), parPreferenciasDescricao)
 
             registro = objLeitorBd.fetchall()
 
             objLeitorBd.close()
-            objConexao.close()
 
             return registro
 
         except Exception as erro:
             return erro
+        finally:
+            objConexao.close()
 
     def inserirBd(self, descricao):
         global objConexao
@@ -117,9 +147,16 @@ class PreferenciasDAO():
 
             objConexao = pyodbc.connect(connectionString)
             objLeitorBd = objConexao.cursor()
-            strSql = "INSERT INTO Preferencias_3 (Descricao) VALUES (?)"
 
-            objLeitorBd.execute(strSql, descricao)
+            strSQL = StringIO()
+            strSQL.write("INSERT INTO")
+            strSQL.write(" Preferencias_3 (")
+            strSQL.write(" Descricao")
+            strSQL.write(" ) VALUES (")
+            strSQL.write(" ?")
+            strSQL.write(" )")
+
+            objLeitorBd.execute(strSQL.getvalue(), descricao)
 
             objConexao.commit()
 
@@ -145,9 +182,15 @@ class PreferenciasDAO():
 
             objConexao = pyodbc.connect(connectionString)
             objLeitorBd = objConexao.cursor()
-            strSql = f"DELETE FROM Preferencias_3 WHERE ID =?"
 
-            objLeitorBd.execute(strSql, idDaLinhaSelecionada)
+            strSQL = StringIO()
+            strSQL.write("DELETE")
+            strSQL.write(" FROM")
+            strSQL.write(" Preferencias_3")
+            strSQL.write(" WHERE")
+            strSQL.write(" ID =?")
+
+            objLeitorBd.execute(strSQL.getvalue(), idDaLinhaSelecionada)
 
             objConexao.commit()
 
@@ -173,9 +216,16 @@ class PreferenciasDAO():
 
             objConexao = pyodbc.connect(connectionString)
             objLeitorBd = objConexao.cursor()
-            strSql = f"UPDATE Preferencias_3 SET Descricao =? WHERE ID =?"
 
-            objLeitorBd.execute(strSql, descricao, idDaLinhaSelecionada)
+            strSQL = StringIO()
+            strSQL.write("UPDATE")
+            strSQL.write(" Preferencias_3")
+            strSQL.write(" SET")
+            strSQL.write(" Descricao =?")
+            strSQL.write(" WHERE")
+            strSQL.write(" ID =?")
+
+            objLeitorBd.execute(strSQL.getvalue(), descricao, idDaLinhaSelecionada)
 
             objConexao.commit()
 

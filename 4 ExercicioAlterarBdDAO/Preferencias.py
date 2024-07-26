@@ -19,19 +19,19 @@ class FrmBancoConectado(tk.Frame):
         master.title("Banco Conectado")
 
         objFrmLstbxPreferencias = FrmLstbxPreferencias(self)
-        objFrmLstbxPreferencias.place(x=190, y=5, width=190, height=260)
+        objFrmLstbxPreferencias.place(x=190, y=5, width=225, height=280)
         objFrmLstbxPreferencias.config(bg=corPrata)
 
         objFrmBotoesLstbx = FrmBotoesLstbx(self, objFrmLstbxPreferencias, Preferencias)
-        objFrmBotoesLstbx.place(x=0, y=5, width=190, height=260)
+        objFrmBotoesLstbx.place(x=0, y=5, width=190, height=280)
         objFrmBotoesLstbx.config(bg=corPrata)
 
         objFrmDtgvwPreferencias = FrmDtgvwPreferencias(self, Preferencias)
-        objFrmDtgvwPreferencias.place(x=190, y=260, width=190, height=170)
+        objFrmDtgvwPreferencias.place(x=190, y=280, width=225, height=170)
         objFrmDtgvwPreferencias.config(bg=corPrata)
 
         objFrmBotoesGrid = FrmBotoesGrid(self, objFrmDtgvwPreferencias)
-        objFrmBotoesGrid.place(x=0, y=260, width=190, height=255)
+        objFrmBotoesGrid.place(x=0, y=280, width=190, height=255)
         objFrmBotoesGrid.config(bg=corPrata)
 
 
@@ -46,7 +46,7 @@ class FrmBotoesLstbx(tk.Frame):
 
         btnMensagem = Button(self, text="Mensagem", relief=RAISED, overrelief=RIDGE, anchor=CENTER,
                              font="Roboto 8 bold", bg=corCinza, fg=corBranca, command=self.mensagem)
-        btnMensagem.grid(row=0, column=0, pady=1)
+        btnMensagem.grid(row=0, column=0, pady=1, padx=5)
         btnMensagem.config(width=25, height=1)
 
         btnDesvCond = Button(self, text="Desvio Condicional", relief=RAISED, overrelief=RIDGE, anchor=CENTER,
@@ -92,7 +92,7 @@ class FrmBotoesLstbx(tk.Frame):
 
         btnLimpaTxt = Button(self, text="Limpa Texto", relief=RAISED, overrelief=RIDGE, anchor=CENTER,
                              font="Roboto 8 bold", bg=corCinza, fg=corBranca, command=self.limpaTxt)
-        btnLimpaTxt.grid(row=8, column=0, pady=1)
+        btnLimpaTxt.grid(row=9, column=0, pady=1)
         btnLimpaTxt.config(width=25, height=1)
 
     def mensagem(self):
@@ -187,10 +187,10 @@ class FrmLstbxPreferencias(tk.Frame):
                                          bg=corBranca, fg=corPreta, selectbackground=corVerde,
                                          selectforeground=corPreta, activestyle="none",
                                          height=23, width=23)
-        self.lstbxPreferencias.place(x=0, y=1, width=180, height=242)
+        self.lstbxPreferencias.place(x=5, y=1, width=200, height=270)
 
         barraRolagem = Scrollbar(self, orient=VERTICAL, command=self.lstbxPreferencias.yview)
-        barraRolagem.place(x=170, y=1, width=15, height=242)
+        barraRolagem.place(x=205, y=1, width=15, height=270)
         self.lstbxPreferencias.config(yscrollcommand=barraRolagem.set)
 
     def limpaTxtPreferencias(self):
@@ -211,7 +211,7 @@ class FrmBotoesGrid(tk.Frame):
         btnConsultarBd = Button(self, text="Consultar", relief=RAISED, overrelief=RIDGE, anchor=CENTER,
                                 font="Roboto 8 bold", bg=corCinza, fg=corBranca,
                                 command=self.objFrmDtgvwPreferencias.consultarBd)
-        btnConsultarBd.grid(row=0, column=0, pady=1)
+        btnConsultarBd.grid(row=0, column=0, pady=1, padx=5)
         btnConsultarBd.config(width=25, height=1)
 
         btnInserirBd = Button(self, text="Inserir", relief=RAISED, overrelief=RIDGE, anchor=CENTER,
@@ -251,7 +251,7 @@ class FrmDtgvwPreferencias(tk.Frame):
 
         self.colunas = ["ID", "Descricao"]
         self.dtgvwPreferencias = tk.ttk.Treeview(self, columns=self.colunas, show="headings")
-        self.dtgvwPreferencias.place(x=0, y=1, width=190, height=135)
+        self.dtgvwPreferencias.place(x=5, y=1, width=200, height=135)
 
         for i in range(len(self.colunas)):
             self.dtgvwPreferencias.heading(self.colunas[i], text=self.colunas[i], anchor=self.ancoramentoColunas[i])
@@ -267,7 +267,7 @@ class FrmDtgvwPreferencias(tk.Frame):
         estiloGrid.configure("Treeview", font="Roboto 8 bold", background=corBranca, foreground=corPreta)
 
         barraRolagem = Scrollbar(self, orient=VERTICAL, command=self.dtgvwPreferencias.yview)
-        barraRolagem.place(x=170, y=27, width=17, height=100)
+        barraRolagem.place(x=205, y=1, width=15, height=135)
         self.dtgvwPreferencias.config(yscrollcommand=barraRolagem.set)
 
         self.refreshGrid()
